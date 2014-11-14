@@ -8,9 +8,9 @@ trait AttributesModule {
   val attributeNameAndValuesReader = new AttributeNameAndValuesReader
 
   class AttributeNamesReader {
-    def read(parameters: Map[String, String], allAttributeNames: List[String]) = {
+    def read(parameters: Map[String, String], allAttributeNames: List[String], parameterPrefix: String = "") = {
       def collect(suffix: Int, acc: List[String]): List[String] = {
-        parameters.get("AttributeName." + suffix) match {
+        parameters.get(parameterPrefix+"AttributeName." + suffix) match {
           case None => acc
           case Some(an) => collect(suffix+1, an :: acc)
         }
@@ -24,7 +24,7 @@ trait AttributesModule {
         }
       }
 
-      val rawAttributeNames = collect(1, parameters.get("AttributeName").toList)
+      val rawAttributeNames = collect(1, parameters.get(parameterPrefix).toList)
       val attributeNames = unfoldAllAttributeIfRequested(rawAttributeNames)
 
       attributeNames
